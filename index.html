@@ -1,0 +1,55 @@
+<html>
+
+
+<head>
+	<script>
+
+		function compile(str) {
+			var parts = str.split("{{");
+			var part;
+			var subparts;
+			var compiled = [];
+			for ( var i = 0; i < parts.length; i++) {
+				part = parts[i];
+				subparts = part.split("}}");
+				if(subparts.length == 2) {
+					//placeholder
+					compiled.push({"name": subparts[0].split(" ").join("")});
+					compiled.push(subparts[1]);
+				} else {
+					compiled.push(subparts[0]);
+				}
+			}
+
+			return {
+				render: function(context){
+					var buffer = "";
+					for(var j = 0; j < compiled.length; j++) {
+						switch(typeof compiled[j]){
+							case "object":
+								buffer += context[compiled[j].name];
+							break;
+
+							case "string":
+								buffer += compiled[j];
+							break;
+						}
+					}
+					return buffer;
+				}
+			};
+
+		}
+
+		var template = compile("{{ nome }} é o nome da {{ teste    }} pessoa <a href=\"#marlunga\">{{ sobrenome }}</a>");
+
+		console.log( template.render({nome: "Caio Meriguetti Costa", teste: "Cacimba", sobrenome: "Morcego"}) );
+
+
+	</script>
+</head>
+
+<body>
+</body>
+
+</html>
